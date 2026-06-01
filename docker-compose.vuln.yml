@@ -1,5 +1,3 @@
-version: "3.9"
-
 # ╔══════════════════════════════════════════════════════════════╗
 # ║  CongesApp — VERSION VULNÉRABLE (pédagogique)               ║
 # ║  Lancer : docker-compose -f docker-compose.vuln.yml up      ║

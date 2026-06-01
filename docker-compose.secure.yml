@@ -1,5 +1,3 @@
-version: "3.9"
-
 # ╔══════════════════════════════════════════════════════════════╗
 # ║  CongesApp — VERSION SÉCURISÉE                              ║
 # ║  Lancer : docker-compose -f docker-compose.secure.yml up    ║
