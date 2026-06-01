@@ -1,0 +1,47 @@
+version: "3.9"
+
+# ╔══════════════════════════════════════════════════════════════╗
+# ║  CongesApp — VERSION SÉCURISÉE                              ║
+# ║  Lancer : docker-compose -f docker-compose.secure.yml up    ║
+# ║  Frontend : http://localhost:3001                            ║
+# ║  API docs : http://localhost:8001/docs                       ║
+# ╚══════════════════════════════════════════════════════════════╝
+
+services:
+  backend:
+    build:
+      context: ./backend-secure
+      dockerfile: Dockerfile
+    container_name: congesapp-backend-secure
+    ports:
+      - "8001:8000"
+    volumes:
+      - db-data-secure:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+      - SECRET_KEY=changez-moi-en-production-clé-longue-et-aléatoire-256bits
+      - ALLOWED_ORIGINS=http://localhost:3001
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        - REACT_APP_MODE=secure
+        - REACT_APP_API_URL=http://localhost:8001
+    container_name: congesapp-frontend-secure
+    ports:
+      - "3001:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  db-data-secure:
