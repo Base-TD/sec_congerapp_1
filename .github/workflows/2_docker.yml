@@ -1,0 +1,41 @@
+name: Docker GHCR
+
+on:
+  workflow_call
+
+env:
+  REGISTRY: ghcr.io
+  USERNAME: ${{github.actor}}
+  IMAGE_NAME: ${{github.repository}} #orga/repo
+
+jobs:
+  Build-Push-Docker:
+    runs-on: ubuntu-latest
+
+    syteps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Registry Login
+        uses: docker/login-action@v3
+        with:
+          registry: ${{env.REGISTRY}}
+          username: ${{env.USERNAME}}
+          password: ${{secrets.YNOV_PAT}}
+
+      - name: Downcase Image Name
+        run: echo "IMAGE_NAME_LOWER=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
+
+      - name: Back Build Push
+        uses: docker/build-push-action@v4
+        with:
+          context: backend-vuln
+          push: true
+          tags: ${{env.REGISTRY}}/${{env.IMAGE_NAME_LOWER}}-back:latest
+
+      - name: Front Build Push
+        uses: docker/build-push-action@v4
+        with:
+          context: frontend-vuln
+          push: true
+          tags: ${{env.REGISTRY}}/${{env.IMAGE_NAME_LOWER}}-front:latest

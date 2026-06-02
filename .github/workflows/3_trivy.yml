@@ -1,0 +1,76 @@
+name: Trivy
+
+on:
+  workflow_call
+
+env:
+  REGISTRY: ghcr.io
+  USERNAME: ${{github.actor}}
+  IMAGE_NAME: ${{github.repository}} #orga/repo
+
+jobs:
+  Trivy-Back-Scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Registry Login
+        uses: docker/login-action@v3
+        with:
+          registry: ${{env.REGISTRY}}
+          username: ${{env.USERNAME}}
+          password: ${{secrets.YNOV_PAT}}
+
+      - name: Downcase Image Name
+        run: echo "IMAGE_NAME_LOWER=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
+
+      - name: Trivy Back Scanner
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: ${{env.IMAGE_NAME_LOWER}}
+          format: 'table'
+          exit-code: '1'
+          output: 'back-scan-results.txt'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITIAL,HIGH,MEDIUM,LOW'
+
+      - name: Upload Scan Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: back-scan-results
+          path: back-scan-results.txt
+          retention-days: 1
+
+  Trivy-Front-Scan:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Registry Login
+        uses: docker/login-action@v3
+        with:
+          registry: ${{env.REGISTRY}}
+          username: ${{env.USERNAME}}
+          password: ${{secrets.YNOV_PAT}}
+
+      - name: Downcase Image Name
+        run: echo "IMAGE_NAME_LOWER=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
+
+      - name: Trivy Front Scanner
+        uses: aquasecurity/trivy-action@0.28.0
+        with:
+          image-ref: ${{env.IMAGE_NAME_LOWER}}
+          format: 'table'
+          exit-code: '1'
+          output: 'front-scan-results.txt'
+          ignore-unfixed: true
+          vuln-type: 'os,library'
+          severity: 'CRITIAL,HIGH,MEDIUM,LOW'
+
+      - name: Upload Scan Results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: front-scan-results
+          path: front-scan-results.txt
+          retention-days: 1

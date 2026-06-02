@@ -12,6 +12,12 @@ jobs:
 
   # Snyk
 
-  # Build_Docker
+  Build_Docker:
+    needs: [SonarQube]
+    uses: ./.github/workflows/2_docker.yml
+    secrets: inherit
 
-  # TrivyScan
+  TrivyScan:
+    needs: [Build_Docker]
+    uses: ./.github/workflows/3_trivy.yml
+    secrets: inherit
