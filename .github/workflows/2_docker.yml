@@ -12,7 +12,7 @@ jobs:
   Build-Push-Docker:
     runs-on: ubuntu-latest
 
-    syteps:
+    steps:
       - name: Checkout
         uses: actions/checkout@v3
 
