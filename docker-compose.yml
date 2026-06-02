@@ -1,0 +1,36 @@
+# ╔══════════════════════════════════════════════════════════════╗
+# ║  CongesApp — VERSION VULNÉRABLE (pédagogique)               ║
+# ║  Lancer : docker-compose -f docker-compose.vuln.yml up      ║
+# ║  Frontend : http://localhost:3000                            ║
+# ║  API docs : http://localhost:8000/docs                       ║
+# ╚══════════════════════════════════════════════════════════════╝
+
+services:
+  backend:    
+    container_name: congesapp-backend-vuln
+    image: ${YNOV_BACK}
+    ports:
+      - "8000:8000"
+    volumes:
+      - db-data-vuln:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  frontend:
+    container_name: congesapp-frontend-vuln
+    image: ${INOV_FRONT}
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  db-data-vuln:

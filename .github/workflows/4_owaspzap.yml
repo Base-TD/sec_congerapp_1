@@ -1,0 +1,77 @@
+name: OWASP ZAP
+
+on:
+  workflow_call
+
+jobs:
+  Deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Update Compose File
+        uses: appleboy/scp-action@0.1.7
+        with:
+          host: ${{secrets.STAGE_HOST}}
+          port: 22
+          username: ${{secrets.STAGE_LOGIN}}
+          password: ${{secrets.STAGE_PASSWORD}}
+
+          source: "./docker-compose.yml"
+          target: "."
+
+      - name: Downcase Image Name
+        run: echo "IMAGE_NAME_LOWER=${GITHUB_REPOSITORY,,}" >> ${GITHUB_ENV}
+
+      - name: Start
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{secrets.STAGE_HOST}}
+          port: 22
+          username: ${{secrets.STAGE_LOGIN}}
+          password: ${{secrets.STAGE_PASSWORD}}
+          script: |
+            echo ${{secrets.YNOV_PAT}} | docker login ghcr.io -u Floriansp40 --password-stdin
+
+            echo YNOV_BACK=ghcr.io${{env.IMAGE_NAME_LOWER}}-back:latest > .env
+            echo YNOV_FRONT=ghcr.io${{env.IMAGE_NAME_LOWER}}-front:latest >> .env 
+
+            docker pull ghcr.io/${{env.IMAGE_NAME_LOWER}}-back:latest
+            docker pull ghcr.io/${{env.IMAGE_NAME_LOWER}}-front:latest
+
+            docker compose up
+
+  ZAP Back Scan:
+    needs: [Deploy]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name:  Zap Scan
+        uses: zaproxy/action-api-scan@v0.9.0
+        with:
+          format: openapi
+          target: '${{secrets.STAGE_HOST}}:8000'
+          fail_action: true
+          artifact_name: 'back_zap_scan'
+          issue_title: 'ZAP BACK Scan result'
+
+  ZAP Front Scan:
+    needs: [Deploy]
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name:  Zap Scan
+        uses: zaproxy/action-baseline@v0.9.0
+        with:          
+          target: '${{secrets.STAGE_HOST}}:3000'
+          fail_action: true
+          artifact_name: 'front_zap_scan'
+          issue_title: 'ZAP FRONT Scan result'
