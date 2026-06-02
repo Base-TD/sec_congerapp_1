@@ -35,8 +35,8 @@ jobs:
           script: |
             echo ${{secrets.YNOV_PAT}} | docker login ghcr.io -u Floriansp40 --password-stdin
 
-            echo YNOV_BACK=ghcr.io${{env.IMAGE_NAME_LOWER}}-back:latest > .env
-            echo YNOV_FRONT=ghcr.io${{env.IMAGE_NAME_LOWER}}-front:latest >> .env 
+            echo YNOV_BACK=ghcr.io/${{env.IMAGE_NAME_LOWER}}-back:latest > .env
+            echo YNOV_FRONT=ghcr.io/${{env.IMAGE_NAME_LOWER}}-front:latest >> .env 
 
             docker pull ghcr.io/${{env.IMAGE_NAME_LOWER}}-back:latest
             docker pull ghcr.io/${{env.IMAGE_NAME_LOWER}}-front:latest
