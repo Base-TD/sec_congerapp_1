@@ -1,0 +1,39 @@
+name: 01 SonarQube
+
+on:
+  workflows_call
+
+jobs:
+  SonarBack:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend-vuln
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: SonarQube
+        uses: SonarSource/sonarcloud-github-action@v3.1.0
+        with:
+          projectBaseDir: ./backend-vuln
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_BACK }}
+
+  SonarFront:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: SonarQube
+        uses: SonarSource/sonarcloud-github-action@v3.1.0
+        with:
+          projectBaseDir: ./frontend
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN_FRONT }}

@@ -1,0 +1,16 @@
+name: SECU
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  SonarQube:
+    uses: ./.github/workflows/1_sonarqube.yml
+
+  # Snyk
+
+  # Build_Docker
+
+  # TrivyScan
