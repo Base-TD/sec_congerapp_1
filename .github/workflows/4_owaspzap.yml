@@ -43,7 +43,7 @@ jobs:
 
             docker compose up
 
-  ZAP Back Scan:
+  ZAP_Back_Scan:
     needs: [Deploy]
     runs-on: ubuntu-latest
 
@@ -60,7 +60,7 @@ jobs:
           artifact_name: 'back_zap_scan'
           issue_title: 'ZAP BACK Scan result'
 
-  ZAP Front Scan:
+  ZAP_Front_Scan:
     needs: [Deploy]
     runs-on: ubuntu-latest
 
