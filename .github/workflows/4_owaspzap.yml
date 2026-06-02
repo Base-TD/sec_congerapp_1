@@ -41,7 +41,7 @@ jobs:
             docker pull ghcr.io/${{env.IMAGE_NAME_LOWER}}-back:latest
             docker pull ghcr.io/${{env.IMAGE_NAME_LOWER}}-front:latest
 
-            docker compose up
+            docker compose up -d
 
   ZAP_Back_Scan:
     needs: [Deploy]
