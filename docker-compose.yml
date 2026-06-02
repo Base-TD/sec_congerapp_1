@@ -24,7 +24,7 @@ services:
 
   frontend:
     container_name: congesapp-frontend-vuln
-    image: ${INOV_FRONT}
+    image: ${YNOV_FRONT}
     ports:
       - "3000:80"
     depends_on:
