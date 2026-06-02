@@ -8,6 +8,7 @@ on:
 jobs:
   SonarQube:
     uses: ./.github/workflows/1_sonarqube.yml
+    secrets: inherit
 
   # Snyk
 
