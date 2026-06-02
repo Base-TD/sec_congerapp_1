@@ -26,7 +26,7 @@ jobs:
       - name: Trivy Back Scanner
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: ${{env.IMAGE_NAME_LOWER}}-back:latest
+          image-ref: ${{env.REGISTRY}}/${{env.IMAGE_NAME_LOWER}}-back:latest
           format: 'table'
           exit-code: '1'
           output: 'back-scan-results.txt'
@@ -59,7 +59,7 @@ jobs:
       - name: Trivy Front Scanner
         uses: aquasecurity/trivy-action@v0.36.0
         with:
-          image-ref: ${{env.IMAGE_NAME_LOWER}}-front:latest
+          image-ref: ${{env.REGISTRY}}/${{env.IMAGE_NAME_LOWER}}-front:latest
           format: 'table'
           exit-code: '1'
           output: 'front-scan-results.txt'
