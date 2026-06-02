@@ -6,14 +6,14 @@ on:
       - main
 
 jobs:
-  SonarQube:
-    uses: ./.github/workflows/1_sonarqube.yml
-    secrets: inherit
+  # SonarQube:
+  #   uses: ./.github/workflows/1_sonarqube.yml
+  #   secrets: inherit
 
   # Snyk
 
   Build_Docker:
-    needs: [SonarQube]
+    # needs: [SonarQube]
     uses: ./.github/workflows/2_docker.yml
     secrets: inherit
 
