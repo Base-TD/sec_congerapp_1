@@ -66,6 +66,7 @@ jobs:
 
       # ── sqlmap en complément ──────────────────────────────────────────
       - name: sqlmap — SQL Injection scann]
+        if: always()
         run: |
           pip install sqlmap -q
           sqlmap \
