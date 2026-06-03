@@ -12,10 +12,10 @@ jobs:
 
   # Snyk
 
-  # Build_Docker:
-  #   # needs: [SonarQube]
-  #   uses: ./.github/workflows/2_docker.yml
-  #   secrets: inherit
+  Build_Docker:
+    # needs: [SonarQube]
+    uses: ./.github/workflows/2_docker.yml
+    secrets: inherit
 
   # TrivyScan:
   #   # needs: [Build_Docker]
@@ -23,6 +23,8 @@ jobs:
   #   secrets: inherit
 
   OwaspZap:
-    # needs: [TrivyScan]
+    needs: [Build_Docker]
     uses: ./.github/workflows/4_owaspzap.yml
     secrets: inherit
+    permissions:
+      issues: write

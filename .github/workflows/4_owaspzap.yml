@@ -75,3 +75,6 @@ jobs:
           fail_action: true
           artifact_name: 'front_zap_scan'
           issue_title: 'ZAP FRONT Scan result'
+        env:
+          ZAP_AUTH_HEADER: Authorization
+          ZAP_AUTH_HEADER_VALUE: Bearer ${{ secrets.ZAP_USER_TOKEN }}

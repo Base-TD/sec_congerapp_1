@@ -39,3 +39,4 @@ jobs:
           context: frontend
           push: true
           tags: ${{env.REGISTRY}}/${{env.IMAGE_NAME_LOWER}}-front:latest
+          build-args: REACT_APP_API_URL=${{ secrets.STAGE_HOST }}
