@@ -64,29 +64,28 @@ jobs:
           ZAP_AUTH_HEADER_VALUE: Bearer ${{ secrets.ZAP_USER_TOKEN }}
           ZAP_AUTH_HEADER_SITE: 'http://${{secrets.STAGE_HOST}}:8000'
 
-  # ── sqlmap en complément ──────────────────────────────────────────
-  - name: sqlmap — SQL Injection scan
-    needs: [ZAP_Back_Scan]
-    run: |
-      pip install sqlmap -q
-      sqlmap \
-        -u "http://${{secrets.STAGE_HOST}}:8000/tp/sqli/search?q=test" \
-        --headers="Authorization: Bearer ${{secrets.ZAP_USER_TOKEN}}" \
-        --dbms=sqlite \
-        --level=3 \
-        --risk=2 \
-        --batch \
-        --output-dir=sqlmap-report \
-        --results-file=sqlmap-report/results.csv
-      echo "--- Résumé sqlmap ---"
-      cat sqlmap-report/results.csv 2>/dev/null || echo "Aucun résultat CSV"
+      # ── sqlmap en complément ──────────────────────────────────────────
+      - name: sqlmap — SQL Injection scann]
+        run: |
+          pip install sqlmap -q
+          sqlmap \
+            -u "http://${{secrets.STAGE_HOST}}:8000/tp/sqli/search?q=test" \
+            --headers="Authorization: Bearer ${{secrets.ZAP_USER_TOKEN}}" \
+            --dbms=sqlite \
+            --level=3 \
+            --risk=2 \
+            --batch \
+            --output-dir=sqlmap-report \
+            --results-file=sqlmap-report/results.csv
+          echo "--- Résumé sqlmap ---"
+          cat sqlmap-report/results.csv 2>/dev/null || echo "Aucun résultat CSV"
 
-  - name: Upload sqlmap report
-    if: always()
-    uses: actions/upload-artifact@v4
-    with:
-      name: sqlmap-report
-      path: sqlmap-report/
+      - name: Upload sqlmap report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: sqlmap-report
+          path: sqlmap-report/
 
   ZAP_Front_Scan:
     needs: [Deploy]
